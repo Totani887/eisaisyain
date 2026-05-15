@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>社員旅行 ホテル比較アンケート</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #0f2044;
+      --navy-mid: #1a3461;
+      --blue: #2a5298;
+      --amber: #c76b00;
+      --amber-light: #e8850a;
+      --green: #2d7a4a;
+      --red: #c23434;
+      --bg: #eef1f7;
+      --white: #ffffff;
+      --text: #1c1c2e;
+      --muted: #5a6078;
+      --card-radius: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans JP', 'Yu Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      padding: 32px 20px 60px;
+    }
+
+    .container { max-width: 1080px; margin: 0 auto; }
+
+    /* HEADER */
+    .header {
+      position: relative;
+      background: var(--navy);
+      color: white;
+      padding: 48px 40px 40px;
+      border-radius: var(--card-radius);
+      margin-bottom: 28px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(15,32,68,.25);
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 80% 20%, rgba(42,82,152,.6) 0%, transparent 60%),
+        radial-gradient(ellipse at 10% 90%, rgba(26,52,97,.8) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .header-inner { position: relative; z-index: 1; }
+    .header-label {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.8);
+      padding: 4px 14px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .header h1 {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(22px, 4vw, 34px);
+      font-weight: 700;
+      letter-spacing: .04em;
+      margin-bottom: 14px;
+      line-height: 1.35;
+    }
+    .header p { font-size: 15px; color: rgba(255,255,255,.78); max-width: 620px; }
+    .header-deco {
+      position: absolute; right: 40px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 120px; opacity: .06;
+      pointer-events: none; user-select: none; line-height: 1;
+    }
+
+    /* SCHEDULE */
+    .schedule {
+      background: var(--white);
+      border-radius: var(--card-radius);
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      border-left: 6px solid var(--blue);
+    }
+    .section-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 18px; font-weight: 700; color: var(--navy);
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::before {
+      content: ''; display: inline-block;
+      width: 4px; height: 20px;
+      background: var(--blue); border-radius: 2px; flex-shrink: 0;
+    }
+    .timeline { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .timeline li {
+      display: flex; gap: 20px;
+      padding: 12px 0;
+      border-bottom: 1px dashed #dde2ee;
+      align-items: flex-start;
+    }
+    .timeline li:last-child { border-bottom: none; }
+    .tl-time { font-size: 14px; font-weight: 700; color: var(--blue); min-width: 52px; padding-top: 1px; letter-spacing: .04em; }
+    .tl-body { font-size: 15px; }
+    .tl-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    /* CARDS */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 28px; }
+    .card {
+      background: var(--white); border-radius: var(--card-radius);
+      padding: 32px 28px; box-shadow: 0 4px 16px rgba(0,0,0,.08);
+      display: flex; flex-direction: column;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(0,0,0,.13); }
+    .card.granbell { border-top: 7px solid var(--blue); }
+    .card.stream   { border-top: 7px solid var(--amber); }
+    .card-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700; letter-spacing: .06em;
+      padding: 5px 13px; border-radius: 999px; margin-bottom: 18px; width: fit-content;
+    }
+    .granbell .card-badge { background: #e8eeff; color: var(--blue); }
+    .stream   .card-badge { background: #fff2e0; color: var(--amber); }
+    .card h2 { font-family: 'Noto Serif JP', serif; font-size: 20px; font-weight: 700; margin-bottom: 20px; line-height: 1.4; }
+    .granbell h2 { color: var(--navy); }
+    .stream   h2 { color: #8a4a00; }
+    .info-block { font-size: 14px; margin-bottom: 20px; }
+    .info-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+    .info-value { font-size: 15px; font-weight: 500; }
+    .distance-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f2f5ff; border: 1px solid #d4dcf5;
+      border-radius: 10px; padding: 10px 16px; font-size: 14px; margin-top: 8px;
+    }
+    .stream .distance-pill { background: #fff8f0; border-color: #f0d9b8; }
+    .distance-pill .dist-icon { font-size: 18px; }
+    .distance-pill .dist-num { font-weight: 700; font-size: 16px; }
+    .pros-cons { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; flex-grow: 1; }
+    .block { border-radius: 12px; padding: 14px 16px; }
+    .block-header { font-size: 12px; font-weight: 700; letter-spacing: .1em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .pros .block-header { color: var(--green); }
+    .cons .block-header { color: var(--red); }
+    .pros { background: #f0faf4; border-left: 4px solid var(--green); }
+    .cons { background: #fff5f5; border-left: 4px solid var(--red); }
+    .block ul { list-style: none; font-size: 14px; display: flex; flex-direction: column; gap: 5px; }
+    .block ul li { display: flex; gap: 8px; align-items: flex-start; line-height: 1.55; }
+    .block ul li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+    .pros ul li::before { background: var(--green); }
+    .cons ul li::before { background: var(--red); }
+    .scene-box { margin-top: 18px; border-radius: 12px; padding: 16px; font-size: 14px; line-height: 1.7; }
+    .granbell .scene-box { background: #f6f8ff; border: 1px solid #dce3f7; }
+    .stream   .scene-box { background: #fffbf5; border: 1px solid #f2debb; }
+    .scene-box .scene-label { font-size: 11px; letter-spacing: .12em; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+    .granbell .scene-label { color: var(--blue); }
+    .stream   .scene-label { color: var(--amber); }
+
+    /* VOTE */
+    .vote {
+      background: var(--white); border-radius: var(--card-radius);
+      padding: 36px 36px 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    }
+    .vote > p { color: var(--muted); font-size: 15px; margin-bottom: 24px; text-align: center; }
+
+    .form-field { margin-bottom: 20px; }
+    .form-label { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 8px; letter-spacing: .06em; display: block; }
+
+    .name-input {
+      width: 100%; max-width: 400px;
+      padding: 12px 16px;
+      border: 2px solid #dde2ee;
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+      display: block;
+      margin: 0 auto;
+    }
+    .name-input:focus { border-color: var(--blue); }
+
+    .vote-options { display: flex; flex-direction: column; gap: 14px; max-width: 560px; margin: 0 auto 20px; }
+    .vote-option {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 22px; border-radius: 14px;
+      border: 2px solid transparent;
+      text-align: left; cursor: pointer;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      font-family: inherit; font-size: 15px; background: #f4f6fb;
+    }
+    .vote-option:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+    .vo-a:hover { border-color: var(--blue); background: #eef1ff; }
+    .vo-b:hover { border-color: var(--amber); background: #fff6ea; }
+    .vo-a.selected { border-color: var(--blue); background: #eef1ff; }
+    .vo-b.selected { border-color: var(--amber); background: #fff6ea; }
+    .vo-check {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 2px solid #c0c8de; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .2s, background .2s;
+    }
+    .vo-a .vo-check { --chk: var(--blue); }
+    .vo-b .vo-check { --chk: var(--amber); }
+    .vote-option.selected .vo-check { background: var(--chk); border-color: var(--chk); }
+    .vote-option.selected .vo-check::after {
+      content: ''; width: 10px; height: 6px;
+      border-left: 2px solid white; border-bottom: 2px solid white;
+      transform: rotate(-45deg) translateY(-1px); display: block;
+    }
+    .vo-content { flex: 1; }
+    .vo-name { font-weight: 700; font-size: 16px; margin-bottom: 3px; }
+    .vo-a .vo-name { color: var(--navy); }
+    .vo-b .vo-name { color: #8a4a00; }
+    .vo-desc { font-size: 13px; color: var(--muted); }
+
+    .comment-input {
+      width: 100%; max-width: 560px;
+      padding: 12px 16px;
+      border: 2px solid #dde2ee;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      resize: vertical;
+      min-height: 80px;
+      transition: border-color .2s;
+      display: block;
+      margin: 0 auto;
+    }
+    .comment-input:focus { border-color: var(--blue); }
+
+    .submit-btn {
+      display: block;
+      margin: 24px auto 0;
+      padding: 16px 48px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      letter-spacing: .06em;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(15,32,68,.25);
+    }
+    .submit-btn:hover { background: var(--blue); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,32,68,.3); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { background: #9aa; cursor: not-allowed; transform: none; }
+
+    /* STATUS MESSAGE */
+    .status-msg {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .status-msg.success { background: #edfaf3; color: var(--green); border: 1px solid #b6e8cd; display: block; }
+    .status-msg.error   { background: #fff3f3; color: var(--red);   border: 1px solid #f5c0c0; display: block; }
+
+    .footer { margin-top: 24px; text-align: center; font-size: 13px; color: #8a90a8; }
+
+    @media (max-width: 600px) {
+      .header { padding: 32px 22px; }
+      .header-deco { display: none; }
+      .schedule { padding: 22px 20px; }
+      .card { padding: 24px 20px; }
+      .vote { padding: 28px 20px; }
+      .vote-option { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-inner">
+      <span class="header-label">2025 社員旅行 / 札幌</span>
+      <h1>ホテル比較アンケート</h1>
+      <p>宿泊ホテルについて、参加者アンケートを実施します。<br>「旅行感重視」か「利便性重視」か、イメージしながらご確認ください。</p>
+    </div>
+    <div class="header-deco">❄</div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div class="schedule">
+    <div class="section-title">当日スケジュール（予定）</div>
+    <ul class="timeline">
+      <li>
+        <span class="tl-time">15:30</span>
+        <div class="tl-body"><div>ホテルチェックイン</div></div>
+      </li>
+      <li>
+        <span class="tl-time">18:00</span>
+        <div class="tl-body">
+          <div>夕食</div>
+          <div class="tl-sub">ジンギスカン羊々亭 札幌本店<br>北海道札幌市中央区南四条西4丁目 松岡ビル5F</div>
+        </div>
+      </li>
+      <li>
+        <span class="tl-time">夕食後</span>
+        <div class="tl-body">自由行動</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- HOTEL CARDS -->
+  <div class="cards">
+    <div class="card granbell">
+      <span class="card-badge">🏙 旅行感・街歩き重視</span>
+      <h2>SAPPORO HOTEL<br>by GRANBELL</h2>
+      <div class="info-block">
+        <div class="info-label">場所</div>
+        <div class="info-value">札幌駅エリア寄り</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">夕食会場からの距離</div>
+        <div class="distance-pill"><span class="dist-icon">🚶</span><span>徒歩 <span class="dist-num">25〜35分</span></span></div>
+        <div class="distance-pill" style="margin-top:8px;"><span class="dist-icon">🚕</span><span>タクシー <span class="dist-num">10〜15分</span></span></div>
+      </div>
+      <div class="pros-cons">
+        <div class="block pros">
+          <div class="block-header">✦ メリット</div>
+          <ul>
+            <li>札幌観光感を楽しみやすい</li>
+            <li>すすきの〜大通〜札幌駅方面を歩いて帰れる</li>
+            <li>大通公園・狸小路・時計台などを通れる</li>
+            <li>大浴場・サウナあり</li>
+            <li>空港からの団体バス移動と相性が良い</li>
+          </ul>
+        </div>
+        <div class="block cons">
+          <div class="block-header">✦ デメリット</div>
+          <ul>
+            <li>徒歩移動はやや長め</li>
+            <li>雨や寒い日は少し大変</li>
+            <li>自由行動後にホテルまで戻る距離がある</li>
+          </ul>
+        </div>
+      </div>
+      <div class="scene-box">
+        <div class="scene-label">🌃 夕食後イメージ</div>
+        ラーメン、写真撮影、買い物、バーなど、<br>各自自由に寄り道しながらホテルへ戻るイメージ。
+      </div>
+    </div>
+
+    <div class="card stream">
+      <span class="card-badge">⚡ 利便性・自由行動重視</span>
+      <h2>SAPPORO STREAM<br>HOTEL</h2>
+      <div class="info-block">
+        <div class="info-label">場所</div>
+        <div class="info-value">すすきの中心部</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">夕食会場からの距離</div>
+        <div class="distance-pill"><span class="dist-icon">🚶</span><span>徒歩 <span class="dist-num">3〜5分</span></span></div>
+      </div>
+      <div class="pros-cons">
+        <div class="block pros">
+          <div class="block-header">✦ メリット</div>
+          <ul>
+            <li>夕食会場から近く移動がラク</li>
+            <li>自由行動しやすい</li>
+            <li>二次会・ラーメン・バー・買い物へ行きやすい</li>
+            <li>地下鉄直結</li>
+            <li>新しくきれいなホテル</li>
+          </ul>
+        </div>
+        <div class="block cons">
+          <div class="block-header">✦ デメリット</div>
+          <ul>
+            <li>街歩き感は少なめ</li>
+            <li>札幌観光というより"すすきの滞在"寄り</li>
+            <li>みんなで歩いて帰る旅行感はやや薄い</li>
+          </ul>
+        </div>
+      </div>
+      <div class="scene-box">
+        <div class="scene-label">🍜 夕食後イメージ</div>
+        すすきので自由に飲み・ラーメン・買い物を楽しみ、<br>好きなタイミングでホテルへ戻るイメージ。
+      </div>
+    </div>
+  </div>
+
+  <!-- VOTE -->
+  <div class="vote">
+    <div class="section-title" style="justify-content:center; margin-bottom:8px;">アンケート</div>
+    <p>どちらのホテルが良いと思いますか？</p>
+
+    <div class="form-field">
+      <label class="form-label" style="text-align:center;">お名前</label>
+      <input class="name-input" type="text" id="nameInput" placeholder="例：山田 太郎">
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" style="text-align:center; max-width:560px; margin:0 auto 8px; display:block;">投票</label>
+      <div class="vote-options">
+        <button class="vote-option vo-a" onclick="selectVote(this, 'granbell')">
+          <span class="vo-check"></span>
+          <div class="vo-content">
+            <div class="vo-name">① SAPPORO HOTEL by GRANBELL</div>
+            <div class="vo-desc">「札幌観光・街歩き・旅行感」重視</div>
+          </div>
+        </button>
+        <button class="vote-option vo-b" onclick="selectVote(this, 'stream')">
+          <span class="vo-check"></span>
+          <div class="vo-content">
+            <div class="vo-name">② SAPPORO STREAM HOTEL</div>
+            <div class="vo-desc">「移動のラクさ・自由行動・利便性」重視</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-field" style="text-align:center;">
+      <label class="form-label" style="text-align:center;">ご意見・ご要望（任意）</label>
+      <textarea class="comment-input" id="commentInput" placeholder="自由にご記入ください"></textarea>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitVote()">回答を送信する</button>
+
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+
+  <div class="footer">社員旅行幹事チーム作成</div>
+</div>
+
+<script>
+  // ============================================================
+  // ★ここにGoogle Apps ScriptのWebアプリURLを貼り付けてください★
+  // ============================================================
+  var GAS_URL = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbx3GrZ4Kp5iVyOtEvtn7A9y6u9UNsrQpINV16S5BmqJNYkJs7l05gKFiMSyU2NLUX62/exec/exec";
+  // ============================================================
+
+  var selectedVote = null;
+
+  function selectVote(el, value) {
+    document.querySelectorAll('.vote-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedVote = value;
+  }
+
+  async function submitVote() {
+    var name    = document.getElementById('nameInput').value.trim();
+    var comment = document.getElementById('commentInput').value.trim();
+    var btn     = document.getElementById('submitBtn');
+    var msg     = document.getElementById('statusMsg');
+
+    // バリデーション
+    if (!name) {
+      showStatus('error', '⚠ お名前を入力してください。');
+      return;
+    }
+    if (!selectedVote) {
+      showStatus('error', '⚠ どちらかのホテルを選択してください。');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '送信中...';
+    msg.className = 'status-msg';
+
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors', // GASはno-corsが必要
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, vote: selectedVote, comment })
+      });
+
+      // no-corsのためレスポンスは読めないが、エラーなければ成功とみなす
+      showStatus('success', '✅ 回答を受け付けました！ご協力ありがとうございます。');
+      btn.textContent = '送信済み';
+
+    } catch (err) {
+      showStatus('error', '⚠ 送信に失敗しました。幹事に直接お伝えください。');
+      btn.disabled = false;
+      btn.textContent = '回答を送信する';
+    }
+  }
+
+  function showStatus(type, text) {
+    var msg = document.getElementById('statusMsg');
+    msg.textContent = text;
+    msg.className = 'status-msg ' + type;
+  }
+</script>
+
+</body>
+</html>
